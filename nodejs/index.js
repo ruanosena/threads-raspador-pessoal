@@ -1,15 +1,15 @@
-const puppeteer = require("puppeteer-core");
-const chromium = require("@sparticuz/chromium");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+import { launch } from "puppeteer-core";
+import Chromium from "@sparticuz/chromium";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 console.log("Loading function");
-exports.handler = async (event, context) => {
-	const browser = await puppeteer.launch({
-		args: chromium.args,
-		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath(
+export async function handler(event, context) {
+	const browser = await launch({
+		args: Chromium.args,
+		defaultViewport: Chromium.defaultViewport,
+		executablePath: await Chromium.executablePath(
 			process.env.AWS_EXECUTION_ENV ? "/opt/nodejs/node_modules/@sparticuz/chromium/bin" : undefined
 		),
-		headless: chromium.headless,
+		headless: Chromium.headless,
 		ignoreHTTPSErrors: true,
 	});
 	const page = await browser.newPage();
@@ -57,4 +57,4 @@ exports.handler = async (event, context) => {
 		await browser.close();
 	}
 	return;
-};
+}
